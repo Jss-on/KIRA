@@ -18,7 +18,6 @@ from langchain.embeddings import OpenAIEmbeddings, HuggingFaceBgeEmbeddings
 from langchain.chains import RetrievalQA, ConversationalRetrievalChain
 from langchain.document_loaders import TextLoader, PyPDFLoader, DirectoryLoader, JSONLoader
 from langchain.prompts import PromptTemplate
-import fitz
 
 from langchain.embeddings import HuggingFaceBgeEmbeddings
 from langchain.prompts import PromptTemplate
