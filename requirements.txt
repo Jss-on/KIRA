@@ -1,0 +1,13 @@
+langchain
+huggingface_hub
+tiktoken
+chromadb
+PyPDF2
+sentence_transformers
+together
+FlagEmbedding
+tqdm
+jq
+chardet
+textract
+
