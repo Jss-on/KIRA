@@ -26,7 +26,7 @@ import textract
 
 
 
-os.environ["TOGETHER_API_KEY"] = "02f9b4bf3afc9eb312604d442f0f51d37de58f58552db6ea892ee21eff593950"
+os.environ["TOGETHER_API_KEY"] = "api-key"
 # Constants and Configuration
 together.api_key = os.environ["TOGETHER_API_KEY"]
 # Configure basic logging settings
