@@ -45,6 +45,7 @@ class RagChain:
         self.llm_chain = None
         self.embedding = None
         self.retriever = None
+        self.full_texts = None
         
         logging.info(f"User directory: {self.user_directory}")
         logging.info(f"Retrieval K: {self.k}")
@@ -227,6 +228,7 @@ class RagChain:
         # logging.info(f"Root Directory : {root_directory}")
         loader = DirectoryLoader(self.user_directory, glob="**/*.txt", loader_cls=TextLoader, silent_errors=True, loader_kwargs=text_loader_kwargs, show_progress=True,use_multithreading=True)
         documents = loader.load()
+        self.full_text = documents
 
         logging.info(f"Number of documents: {len(documents)}")
         #splitting the text into
@@ -239,17 +241,25 @@ class RagChain:
         logging.info("Succesfull loaded embeddings.")
 
         split_docs_chunked_list = list(split_docs_chunked)
+        logging.info(f"Number of chunks: {len(split_docs_chunked_list)}")
 
         persist_directory = os.path.join(self.user_directory,"db")
         logging.info(f"User persist directory: {persist_directory}")
+        if os.path.exists(persist_directory):
+                print("The path exists.")
+        else:
+            print("The path does not exist.")
+            os.mkdir(persist_directory)
+        
+        
         for split_docs_chunk in tqdm(split_docs_chunked_list, desc="Processing chunks"):
             vectordb = Chroma.from_documents(documents=split_docs_chunk,
                                             embedding=self.embedding,
                                             persist_directory=persist_directory)
             vectordb.persist()
         
-        self.retriever = vectordb.as_retriever(search_kwargs={"k": self.k})
-
+        self.retriever = vectordb.as_retriever(search_kwargs={"k": self.k}, search_type="mmr")
+        logging.info("Done initializing retriever")
 
 
     def load_bge_embeddings(self):
@@ -283,9 +293,11 @@ class RagChain:
             return prompt_template
 
 
-        sys_prompt = """You are a helpful, respectful and honest assistant. You carefully provide accurate, factual, thoughtful, nuanced answers, and are brilliant at reasoning. Always answer as helpfully as possible using the context text provided. Your answers should only answer the question once and not have any text after the answer is done.
-
-        If a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information. """
+        sys_prompt = """Your name is KIRA that stands for Knowledge Intensive Retrieval Assistant. You are a helpful, respectful and honest assistant. You carefully provide accurate, factual, thoughtful, nuanced answers, and are brilliant at reasoning.
+        Always answer as helpfully as possible using the context text provided.
+        You think quitely and carefully if the question is relevant to the context text.
+        Your answers should only answer the question once and not have any text after the answer is done.
+        If a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please say so and please don't share false information. """
 
         instruction = """CONTEXT:/n/n {context}/n
 
