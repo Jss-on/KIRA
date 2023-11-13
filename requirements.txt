@@ -1,7 +1,7 @@
 langchain==0.0.263
 huggingface_hub
 tiktoken
-chromadb
+chromadb==0.4.15
 PyPDF2
 sentence_transformers
 together
