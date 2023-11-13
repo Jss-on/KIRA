@@ -1,5 +1,4 @@
-gradio
-langchain
+langchain==0.0.263
 huggingface_hub
 tiktoken
 chromadb
@@ -11,4 +10,5 @@ tqdm
 jq
 chardet
 textract
+gradio
 
